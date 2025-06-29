@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "289178375634",
+    "project_id": "sikancil-apps",
+    "storage_bucket": "sikancil-apps.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289178375634:android:03ce6b8f8530bc4cb2e40b",
+        "android_client_info": {
+          "package_name": "com.example.sikancil"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCN_eeIEIxpNlKF4a9Xq2Jqjmk6QDNsVoE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
