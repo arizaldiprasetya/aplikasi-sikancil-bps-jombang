@@ -22,6 +22,7 @@ class DetailRiwayatLaporanPage extends StatelessWidget {
     String deskripsiLaporan = laporanData['deskripsiLaporan'] ?? '-';
     String notesLaporan = laporanData['notesLaporan'] ?? '';
     String penanggungJawab = laporanData['penanggungJawab'] ?? '-';
+    String noTelpPenanggungJawab = laporanData['noTelpPenanggungJawab'] ?? '-';
 
     // Format tanggal laporan dengan jam
     String tanggalFormatted = '-';
@@ -144,6 +145,22 @@ class DetailRiwayatLaporanPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
+                 // No Telp Penanggung Jawab
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(Icons.phone, color: Colors.blueGrey, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'No. WA PJ: $noTelpPenanggungJawab',
+                        style: const TextStyle(fontSize: 16, color: Colors.black54),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
                 Divider(thickness: 1, color: Colors.grey[300]),
 
                 // Deskripsi

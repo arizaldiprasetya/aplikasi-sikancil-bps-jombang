@@ -28,6 +28,7 @@ class _BuatLaporanPageState extends State<BuatLaporanPage> {
     text: DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now()) + ' WIB',
   );
   final _penanggungJawabController = TextEditingController();
+  final _noTelpController = TextEditingController();
 
   String? _kategoriTerpilih;
   File? _imageFile;
@@ -42,11 +43,19 @@ class _BuatLaporanPageState extends State<BuatLaporanPage> {
   ];
 
   final Map<String, String> _penanggungJawabMap = {
-    'Kerusakan Barang IT': 'Riska Andriani, S.ST',
-    'Kerusakan Barang Non-IT': 'Mitha Ramadhani Pratiwi, A.Md',
     'Keamanan': 'Alim Sholehuddin, S.Si, M.E',
     'Kebersihan': 'Alim Sholehuddin, S.Si, M.E',
+    'Kerusakan Barang IT': 'Riska Andriani, S.ST',
+    'Kerusakan Barang Non-IT': 'Mitha Ramadhani Pratiwi, A.Md',
     'Lainnya': 'Alim Sholehuddin, S.Si, M.E',
+  };
+
+  final Map<String, String> _noTelpMap = {
+    'Keamanan': '6282395527552',
+    'Kebersihan': '6282395527552',
+    'Kerusakan Barang IT': '6282231358801',
+    'Kerusakan Barang Non-IT': '6285156975906',
+    'Lainnya': '6282395527552',
   };
 
   final ImagePicker _picker = ImagePicker();
@@ -110,6 +119,7 @@ class _BuatLaporanPageState extends State<BuatLaporanPage> {
         'tanggalLaporan': Timestamp.fromDate(tanggalLaporan),
         'kategoriLaporan': _kategoriTerpilih,
         'penanggungJawab': _penanggungJawabController.text.trim(),
+        'noTelpPenanggungJawab': _noTelpController.text.trim(),
         'deskripsiLaporan': _deskripsiController.text.trim(),
         'gambarBase64': base64Image ?? '',
         'notesLaporan': '',
@@ -142,6 +152,7 @@ class _BuatLaporanPageState extends State<BuatLaporanPage> {
     setState(() {
       _kategoriTerpilih = null;
       _penanggungJawabController.clear();
+      _noTelpController.clear();
       _imageFile = null;
       _tanggalController.text =
           DateFormat('dd-MM-yyyy HH:mm').format(DateTime.now()) + ' WIB';
@@ -210,6 +221,8 @@ class _BuatLaporanPageState extends State<BuatLaporanPage> {
                   SizedBox(height: 12),
                   _buildTextField('Penanggung Jawab Kategori', _penanggungJawabController),
                   SizedBox(height: 12),
+                  _buildTextField('No. Telp Penanggung Jawab', _noTelpController),
+                  SizedBox(height: 12),
                   _buildTextField('Deskripsi Laporan', _deskripsiController, maxLines: 3),
                   SizedBox(height: 16),
                   _buildImageUploadSection(),
@@ -272,7 +285,7 @@ class _BuatLaporanPageState extends State<BuatLaporanPage> {
   }) {
     return TextFormField(
       controller: controller,
-      readOnly: label == 'Penanggung Jawab Kategori',
+      readOnly: label == 'Penanggung Jawab Kategori' || label == 'No. Telp Penanggung Jawab',
       decoration: InputDecoration(
         labelText: label,
         hintText: hintText,
@@ -312,8 +325,8 @@ class _BuatLaporanPageState extends State<BuatLaporanPage> {
       onChanged: (value) {
         setState(() {
           _kategoriTerpilih = value;
-          _penanggungJawabController.text =
-              _penanggungJawabMap[value!] ?? '';
+          _penanggungJawabController.text = _penanggungJawabMap[value!] ?? '';
+          _noTelpController.text = _noTelpMap[value] ?? '';
         });
       },
       validator: (value) => value == null ? 'Pilih kategori' : null,

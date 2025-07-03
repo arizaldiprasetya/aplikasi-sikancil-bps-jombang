@@ -69,6 +69,8 @@ class _ExportDataPageState extends State<ExportDataPage> {
             : null,
         'notesLaporan': data['notesLaporan'] ?? '',
         'statusLaporan': data['statusLaporan'] ?? '',
+        'penanggungJawab': data['penanggungJawab'] ?? '',
+        'noTelpPenanggungJawab': data['noTelpPenanggungJawab'] ?? '',
       });
     }
 
@@ -90,7 +92,9 @@ class _ExportDataPageState extends State<ExportDataPage> {
       'Deskripsi',
       'Tanggal Perbaikan',
       'Catatan',
-      'Status'
+      'Status',
+      'Penanggung Jawab',
+      'No. Telp PJ',
     ];
 
     for (int i = 0; i < headers.length; i++) {
@@ -111,6 +115,8 @@ class _ExportDataPageState extends State<ExportDataPage> {
       );
       sheet.getRangeByIndex(i + 2, 7).setText(laporan['notesLaporan']);
       sheet.getRangeByIndex(i + 2, 8).setText(laporan['statusLaporan']);
+      sheet.getRangeByIndex(i + 2, 9).setText(laporan['penanggungJawab']);
+      sheet.getRangeByIndex(i + 2, 10).setText(laporan['noTelpPenanggungJawab']);
     }
 
     final bytes = workbook.saveAsStream();
@@ -120,53 +126,86 @@ class _ExportDataPageState extends State<ExportDataPage> {
   }
 
   Future<void> _exportToPdf() async {
-    final pdf = pw.Document();
+  final pdf = pw.Document();
 
-    pdf.addPage(
-      pw.MultiPage(
-        pageFormat: PdfPageFormat.a4.landscape,
-        build: (context) => [
-          pw.Text(
-            'Data Laporan SIKANCIL',
-            style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
+  pdf.addPage(
+    pw.MultiPage(
+      pageFormat: PdfPageFormat.a4.landscape,
+      build: (context) {
+        return [
+          pw.Center(
+            child: pw.Text(
+              'Data Laporan SIKANCIL',
+              style: pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold),
+            ),
           ),
-          pw.SizedBox(height: 20),
-          pw.Table.fromTextArray(
-            headers: [
-              'Nama',
-              'Judul',
-              'Tanggal Laporan',
-              'Kategori',
-              'Deskripsi',
-              'Tanggal Perbaikan',
-              'Catatan',
-              'Status'
+          pw.SizedBox(height: 12),
+          pw.Table(
+            border: pw.TableBorder.all(width: 0.5),
+            columnWidths: {
+              0: pw.FlexColumnWidth(2),
+              1: pw.FlexColumnWidth(2),
+              2: pw.FlexColumnWidth(2),
+              3: pw.FlexColumnWidth(2),
+              4: pw.FlexColumnWidth(4),
+              5: pw.FlexColumnWidth(2),
+              6: pw.FlexColumnWidth(3),
+              7: pw.FlexColumnWidth(2),
+              8: pw.FlexColumnWidth(3),
+              9: pw.FlexColumnWidth(3),
+            },
+            children: [
+              // Header
+              pw.TableRow(
+                decoration: pw.BoxDecoration(color: PdfColors.grey300),
+                children: [
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Nama', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Judul', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Tgl Laporan', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Kategori', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Deskripsi', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Tgl Perbaikan', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Catatan', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Status', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('Penanggung Jawab', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                  pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text('No. Telp PJ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold))),
+                ],
+              ),
+
+              ...laporanList.map((laporan) {
+                return pw.TableRow(
+                  children: [
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['namaPelapor'] ?? '')),
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['judulLaporan'] ?? '')),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(5),
+                        child: pw.Text(DateFormat('dd-MM-yyyy').format(laporan['tanggalLaporan']))),
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['kategoriLaporan'] ?? '')),
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['deskripsiLaporan'] ?? '')),
+                    pw.Padding(
+                        padding: const pw.EdgeInsets.all(5),
+                        child: pw.Text(laporan['tanggalPerbaikan'] != null
+                            ? DateFormat('dd-MM-yyyy').format(laporan['tanggalPerbaikan'])
+                            : '-')),
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['notesLaporan'] ?? '')),
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['statusLaporan'] ?? '')),
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['penanggungJawab'] ?? '')),
+                    pw.Padding(padding: const pw.EdgeInsets.all(5), child: pw.Text(laporan['noTelpPenanggungJawab'] ?? '')),
+                  ],
+                );
+              }).toList(),
             ],
-            data: laporanList.map((laporan) {
-              return [
-                laporan['namaPelapor'],
-                laporan['judulLaporan'],
-                DateFormat('dd-MM-yyyy').format(laporan['tanggalLaporan']),
-                laporan['kategoriLaporan'],
-                laporan['deskripsiLaporan'],
-                laporan['tanggalPerbaikan'] != null
-                    ? DateFormat('dd-MM-yyyy').format(laporan['tanggalPerbaikan'])
-                    : '-',
-                laporan['notesLaporan'],
-                laporan['statusLaporan']
-              ];
-            }).toList(),
-            cellAlignment: pw.Alignment.centerLeft,
           ),
-        ],
-      ),
-    );
+        ];
+      },
+    ),
+  );
 
-    await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
-  }
+  await Printing.layoutPdf(onLayout: (PdfPageFormat format) async => pdf.save());
+}
 
   Future<void> _exportToSpreadsheet() async {
-    const String scriptURL = 'https://script.google.com/macros/s/AKfycbzvZsgYoMR00ovpe8NpGQ0RBldpjcjFnMsLNm2CU48W6C_DZM5YsOozpc6jaTQOoLZl/exec';
+    const String scriptURL = 'https://script.google.com/macros/s/AKfycbzH6pt8l5lleeb63_ep6j4u4kSkQKrP1OxCe4HDi5jISYG_vg4IS3XnHS5YctQC_mXq/exec';
 
     final List<Map<String, dynamic>> formattedData = laporanList.map((laporan) {
       return {
@@ -180,32 +219,34 @@ class _ExportDataPageState extends State<ExportDataPage> {
             : '-',
         'notesLaporan': laporan['notesLaporan'],
         'statusLaporan': laporan['statusLaporan'],
+        'penanggungJawab': laporan['penanggungJawab'],
+        'noTelpPenanggungJawab': laporan['noTelpPenanggungJawab'],
       };
     }).toList();
 
     try {
-    final response = await http.post(
-      Uri.parse(scriptURL),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(formattedData),
-    );
+      final response = await http.post(
+        Uri.parse(scriptURL),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(formattedData),
+      );
 
     if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Data laporan berhasil diekspor ke Google Spreadsheet. Silakan cek spreadsheet Anda.",
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              "Data laporan berhasil diekspor ke Google Spreadsheet. Silakan cek spreadsheet Anda.",
+            ),
           ),
-        ),
+        );
+      } else {
+        throw Exception('Silakan cek spreadsheet Anda.');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text( "Data laporan berhasil diekspor ke Google Spreadsheet. Silakan cek spreadsheet Anda.")),
       );
-    } else {
-      throw Exception('Silakan cek spreadsheet Anda.');
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text( "Data laporan berhasil diekspor ke Google Spreadsheet. Silakan cek spreadsheet Anda.")),
-    );
-  }
   }
 
   @override
@@ -301,6 +342,8 @@ class _ExportDataPageState extends State<ExportDataPage> {
                           DataColumn(label: Text('Tanggal Perbaikan')),
                           DataColumn(label: Text('Catatan')),
                           DataColumn(label: Text('Status')),
+                          DataColumn(label: Text('PJ')),
+                          DataColumn(label: Text('No. Telp PJ')),
                         ],
                         rows: laporanList.map((laporan) {
                           return DataRow(
@@ -317,6 +360,8 @@ class _ExportDataPageState extends State<ExportDataPage> {
                               )),
                               DataCell(Text(laporan['notesLaporan'])),
                               DataCell(Text(laporan['statusLaporan'])),
+                              DataCell(Text(laporan['penanggungJawab'])),
+                              DataCell(Text(laporan['noTelpPenanggungJawab'])),
                             ],
                           );
                         }).toList(),
